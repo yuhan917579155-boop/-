@@ -1,0 +1,29 @@
+什么是systemd？ 
+systemd 是现在linux系统中的初始化系统，主要的任务就是启动和管理系统服务，简单来说它是系统启动后运行的第一个进程（PID 1）负责拉起系统的其他程序。在systemd中，单元（unit）是管理各种资源的，
+包括服务（.service）、挂载点（.mount）、定时器（.time）等，其中服务（.service）是最常用的一种，用来定义一个后台进程启动、停止、重启行为。
+
+服务单元是什么？
+服务单元是文本配置文件，告诉systemd如何管理特定的程序。它包括（1）服务描述、（2）启动服务命令、（3）服务类型（简单进程或者fork进程）、（4）是否开机自启、（5）依赖关系。
+（用最简单的话来总结就是给服务写一个操作手册）
+
+服务单元文件位置（systemd读取的优先级从高到低）
+/etc/systemd/system-->/run/systemd/system-->/lib/systemd/system
+
+服务单元的基本结构
+一个服务大暖通常由三部分组成：[unit]、[service]、[install]
+eg：   
+[unit]
+description =my test service
+After =networ.target
+
+[service]
+type =simpe
+EXecstart =/user/bin/my_service --port 8080
+EXecstop =/bin/kill -15$MAINPID
+user =nobody
+group =nogroup
+restart =on-failure
+
+[install]
+wantedBy =multi-user.target
+
