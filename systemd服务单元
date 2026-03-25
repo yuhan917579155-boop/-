@@ -27,3 +27,51 @@ restart =on-failure
 [install]
 wantedBy =multi-user.target
 
+
+[unit]字段
+Description：对服务进行描述的
+After：定义启动先后顺序，它只控制顺序，不强制依赖。
+Befor：表示本服务再某个目标之前启动，只控制顺序，不强制依赖。
+Requires：强依赖，如果依赖单元启动失败，本服务不启动。
+wants：弱依赖，依赖单元启动失败，不影响本服务启动。
+conflicts：定义冲突关系，如果本服务启动，冲突单元立即停止。
+
+[service]
+type:指定服务的启动方式
+      simple：主进程进入ExecStart启动进程，一直运行再前台。
+      forking：程序启动后会fork出子进程，父进程突出。
+      oneshort：一次性任务，执行完就退出，常与remainAfterExit=yes配合表示，任务完成。
+      notify：程序启动通过sd_notify发通知，告诉systemd启动
+      dbus：程序会在D-Bus注册名字，systemd等待名字出现才算启动完成。
+EXecstart：启动服务的完整命令（必须用完整路径）
+Execstop：停止服务命令（也是用绝对路径。若没指定，systemd也会发sigterm信号）
+ExecReload：重载配置命令（不重启进程，只让程序重读配置文件）
+user/Group：以那个用户和那个组运行服务器
+Restart：定义什么时候重启
+        no---------不重启
+        on-success---------进程正常退出时候重启
+        on-failure---------进程异常退出时候重启
+        always ------------总是重启
+        on-abnormal--------被信号、超时等异常行为终止时重启
+Restarsec：重启前等待时间
+Environment：设置环境变量
+EnvironmenFile：从文件中加载环境变量
+workingDirecotory：设置工作目录
+
+[install]
+WantedBy:本服务通常被那个target所“想要”通常设为multi-user.target     软依赖 
+RequirdBy：强依赖
+Alias：为单元设置别名 
+Also：安装本单元，同时安装其他单元
+
+如何管理服务单元？
+使用systemdctl 命令（要用sudo权限）
+（1）systemdctl status myservice.service---------------查看服务状态
+（2）systemdctl start myservice.service----------------启动服务
+（3）systemdctl stop myservice.service------------------关闭服务
+（4）systemdctl restart myservice.service---------------重启服务
+（5）systemdctl reload myservice.service----------------重新加载服务
+（6）systemdctl enable myservice.service----------------开机启动服务
+（7）systemdctl disable myservice.service---------------禁止开机自启
+（8）systemdctl list-units --type=service---------------查看已经启动的服务
+（9）systemdctl daemon-reload --------------------------重新加载systemd配置
